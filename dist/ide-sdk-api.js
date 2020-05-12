@@ -561,6 +561,7 @@ function updateTreeData(options) {
 }
 
 /**
+ * 获取全局的视图树数据
  * @param {object} options
  * {
  *     msgId,               //唯一ID
@@ -585,6 +586,18 @@ function getTreeData(options) {
     _EventHelper2.default.request({ eventName: eventName, eventData: eventData, callbackName: callbackName, callback: callback });
 }
 
+/**
+ * 获取全局的面板状态
+ * @param {object} options
+ * {
+ *     callback:function(eventData,eventContext){  //获取返回结果的回调
+ *         let {
+ *              leftVisible, //左侧面板的显示状态
+ *              rightVisible //右侧面板的显示状态
+ *         } = eventData;
+ *     }
+ * }
+ */
 function getPanelState(options) {
     var callback = options.callback;
 
@@ -594,6 +607,14 @@ function getPanelState(options) {
     _EventHelper2.default.request({ eventName: eventName, eventData: eventData, callbackName: callbackName, callback: callback });
 }
 
+/**
+ * 设置全局的面板状态
+ * @param {object} options
+ * {
+ *     leftVisible:true,  //左侧面板的显示状态
+ *     rightVisible:true  //右侧面板的显示状态
+ * }
+ */
 function setPanelState(options) {
     var eventName = "setPanelState";
     var eventData = options;
