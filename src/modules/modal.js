@@ -25,12 +25,27 @@ export function getModalContext(options){
 
 /**
  * 关闭全局弹窗
+ * @param {object} options 需要携带的参数
  */
-export function modalClose(){
+export function modalClose(options){
     let eventName = "modal.close";
-    EventHelper.request({eventName});
+    let eventData = options;
+    EventHelper.request({eventName,eventData});
 }
-
+/**
+ * 当全局弹窗关闭时触发
+ * @param {object} options
+ *{
+ *     callback:function(eventData,eventContext){//获取返回结果的回调
+ *          //eventData为modalClose时传入的参数
+ *     }
+ *}
+ */
+export function onModalClose(options) {
+    let {callback} = options;
+    let eventName = 'modal.closed';
+    EventHelper.listen({eventName,callback});
+}
 /**
  * 打开全局弹窗
  * @param {object} options

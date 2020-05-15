@@ -633,6 +633,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getModalContext = getModalContext;
 exports.modalClose = modalClose;
+exports.onModalClose = onModalClose;
 exports.modalOpen = modalOpen;
 exports.setModalConfig = setModalConfig;
 
@@ -668,12 +669,28 @@ function getModalContext(options) {
 
 /**
  * 关闭全局弹窗
+ * @param {object} options 需要携带的参数
  */
-function modalClose() {
+function modalClose(options) {
   var eventName = "modal.close";
-  _EventHelper2.default.request({ eventName: eventName });
+  var eventData = options;
+  _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
 }
+/**
+ * 当全局弹窗关闭时触发
+ * @param {object} options
+ *{
+ *     callback:function(eventData,eventContext){//获取返回结果的回调
+ *          //eventData为modalClose时传入的参数
+ *     }
+ *}
+ */
+function onModalClose(options) {
+  var callback = options.callback;
 
+  var eventName = 'modal.closed';
+  _EventHelper2.default.listen({ eventName: eventName, callback: callback });
+}
 /**
  * 打开全局弹窗
  * @param {object} options
