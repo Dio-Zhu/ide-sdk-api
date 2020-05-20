@@ -77,6 +77,23 @@ export function onDataChange(options) {
   let eventName = 'pane.data@'+paneKey;
   EventHelper.listen({eventName,callback});
 }
+/**
+ *  当元素被删除时会触发
+ * @param {object} options
+ *{
+ *     paneKey，//必须参数，对应注册面板的key值
+ *     callback:function(eventData,eventContext){//获取返回结果的回调
+ *        let {
+ *             tplTree:{}   //当前页面的数据
+ *        } = eventData
+ *}
+ */
+export function onDeleteData(options) {
+  let {paneKey,callback} = options;
+  if(!paneKey)return;
+  let eventName = 'pane.deleteData@'+paneKey;
+  EventHelper.listen({eventName,callback});
+}
 
 /**
  *  当应用页面被切换/数据加载完成时会触发
