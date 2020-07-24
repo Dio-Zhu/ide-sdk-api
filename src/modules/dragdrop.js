@@ -78,6 +78,11 @@ export function dragStopToCanvas(options){
  * 在画布中监听，自定义面板开始拖拽的事件。
  * 此方法在 画布 中使用
  * @param options
+ * {
+ *     callback:function(eventData,eventContext){//获取返回结果的回调
+ *          //eventData的内容与dragStartToCanvas入参保持一致
+ *     }
+ * }
  */
 export function onDragStartToCanvas(options){
     let {callback} = options||{};
@@ -89,6 +94,11 @@ export function onDragStartToCanvas(options){
  * 在画布中监听，自定义面板停止拖拽的事件。
  * 此方法在 画布 中使用
  * @param options
+ * {
+ *     callback:function(eventData,eventContext){//获取返回结果的回调
+ *              //无额外参数
+ *     }
+ * }
  */
 export function onDragStopToCanvas(options){
     let {callback} = options||{};
