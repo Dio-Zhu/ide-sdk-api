@@ -475,6 +475,10 @@ var _iframepane = __webpack_require__(7);
 
 var iframepane = _interopRequireWildcard(_iframepane);
 
+var _dragdrop = __webpack_require__(8);
+
+var dragdrop = _interopRequireWildcard(_dragdrop);
+
 var _EventHelper = __webpack_require__(0);
 
 var _EventHelper2 = _interopRequireDefault(_EventHelper);
@@ -494,6 +498,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 exports.default = _extends({}, common, modal, {
   ifrPane: _extends({}, iframepane),
   ifrModal: _extends({}, iframemodal),
+  dnd: _extends({}, dragdrop),
   EventHelper: _EventHelper2.default,
   MessageHelper: _MessageHelper2.default,
   MessageDefines: _MessageDefines2.default
@@ -916,6 +921,7 @@ exports.getData = getData;
 exports.getContext = getContext;
 exports.updateData = updateData;
 exports.onDataChange = onDataChange;
+exports.onDeleteData = onDeleteData;
 exports.onContextChange = onContextChange;
 exports.onShow = onShow;
 exports.onHide = onHide;
@@ -1012,6 +1018,25 @@ function onDataChange(options) {
   var eventName = 'pane.data@' + paneKey;
   _EventHelper2.default.listen({ eventName: eventName, callback: callback });
 }
+/**
+ *  当元素被删除时会触发
+ * @param {object} options
+ *{
+ *     paneKey，//必须参数，对应注册面板的key值
+ *     callback:function(eventData,eventContext){//获取返回结果的回调
+ *        let {
+ *             tplTree:{}   //当前页面的数据
+ *        } = eventData
+ *}
+ */
+function onDeleteData(options) {
+  var paneKey = options.paneKey,
+      callback = options.callback;
+
+  if (!paneKey) return;
+  var eventName = 'pane.deleteData@' + paneKey;
+  _EventHelper2.default.listen({ eventName: eventName, callback: callback });
+}
 
 /**
  *  当应用页面被切换/数据加载完成时会触发
@@ -1077,6 +1102,295 @@ function onHide(options) {
   if (!paneKey) return;
   var eventName = 'pane.hide@' + paneKey;
   _EventHelper2.default.listen({ eventName: eventName, callback: callback });
+}
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.getContextData = getContextData;
+exports.canvasIsDragStart = canvasIsDragStart;
+exports.canvasIsDragStop = canvasIsDragStop;
+exports.dragStartToCanvas = dragStartToCanvas;
+exports.dragStopToCanvas = dragStopToCanvas;
+exports.onDragStartToCanvas = onDragStartToCanvas;
+exports.onDragStopToCanvas = onDragStopToCanvas;
+exports.selectNode = selectNode;
+exports.unSelectNode = unSelectNode;
+exports.insertNode = insertNode;
+exports.moveNode = moveNode;
+exports.deleteNode = deleteNode;
+exports.onChooseNode = onChooseNode;
+exports.onUnChooseNode = onUnChooseNode;
+exports.buttonClick = buttonClick;
+
+var _EventHelper = __webpack_require__(0);
+
+var _EventHelper2 = _interopRequireDefault(_EventHelper);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * 获取当前上下文数据
+ * 此方法在 画布 或自定义面板 中使用
+ * @param options
+ * {
+ *     paneKey, //如果是在画布区域调用此方法，无需传递此参数，如果是在自定义面板里面调用此方法需要传递参数值为面板的key值。
+ *     callback:function(eventData,eventContext){//获取返回结果的回调
+ *          //eventData的内容说明，请参看：xxx
+ *     }
+ * }
+ */
+function getContextData(options) {
+    var _ref = options || {},
+        paneKey = _ref.paneKey,
+        callback = _ref.callback;
+
+    var eventName = paneKey ? "dnd.getContextData@" + paneKey : "dnd.getContextData";
+    var eventData = null;
+    var callbackName = paneKey ? "dnd.contextData@" + paneKey : "dnd.contextData";
+    _EventHelper2.default.request({ eventName: eventName, eventData: eventData, callbackName: callbackName, callback: callback });
+}
+
+/**
+ * 在画布中抓取元素开始拖拽时，通过此方法通知画布以外区域，正在拖拽中。
+ * 此方法在 画布 中使用
+ * @param options
+ */
+function canvasIsDragStart(options) {
+    var eventName = "dnd.canvasIsDragStart";
+    var eventData = null;
+    _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
+}
+/**
+ * 在画布中释放元素停止拖拽时，通过此方法通知画布以外区域，已停止拖拽。
+ * 此方法在 画布 中使用
+ * @param options
+ */
+function canvasIsDragStop(options) {
+    var eventName = "dnd.canvasIsDragStop";
+    var eventData = null;
+    _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
+}
+
+/**
+ * 在自定义面板中开始拖拽时，通过此方法通知画布区域。
+ * 此方法在 自定义面板 中使用
+ * @param options
+ * {
+ *     paneKey,     //必填，自定义面板的key值
+ *     uiType,      //UI控件类型
+ *     uiData       //UI控件数据
+ *     modelType,   //模型类型
+ *     modelData    //模型数据
+ * }
+ */
+function dragStartToCanvas(options) {
+    var _ref2 = options || {},
+        paneKey = _ref2.paneKey,
+        uiType = _ref2.uiType,
+        uiData = _ref2.uiData,
+        modelType = _ref2.modelType,
+        modelData = _ref2.modelData;
+
+    var eventName = "dnd.dragStartToCanvas@" + paneKey;
+    var eventData = { uiType: uiType, uiData: uiData, modelType: modelType, modelData: modelData };
+    _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
+}
+
+/**
+ * 在自定义面板中停止拖拽时，通过此方法通知画布区域。
+ * 此方法在 自定义面板 中使用
+ * @param options
+ * {
+ *      paneKey//必填，自定义面板的key值
+ * }
+ */
+function dragStopToCanvas(options) {
+    var _ref3 = options || {},
+        paneKey = _ref3.paneKey;
+
+    var eventName = "dnd.dragStopToCanvas@" + paneKey;
+    var eventData = null;
+    _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
+}
+
+/**
+ * 在画布中监听，自定义面板开始拖拽的事件。
+ * 此方法在 画布 中使用
+ * @param options
+ */
+function onDragStartToCanvas(options) {
+    var _ref4 = options || {},
+        callback = _ref4.callback;
+
+    var eventName = 'dnd.onDragStartToCanvas';
+    _EventHelper2.default.listen({ eventName: eventName, callback: callback });
+}
+
+/**
+ * 在画布中监听，自定义面板停止拖拽的事件。
+ * 此方法在 画布 中使用
+ * @param options
+ */
+function onDragStopToCanvas(options) {
+    var _ref5 = options || {},
+        callback = _ref5.callback;
+
+    var eventName = 'dnd.onDragStopToCanvas';
+    _EventHelper2.default.listen({ eventName: eventName, callback: callback });
+}
+
+/**
+ * 在画布中操作层级结构，将指定节点设置为选中状态
+ * 此方法在 画布 中使用
+ * @param options
+ * {
+ *     nid //层级中的指定节点nid
+ * }
+ */
+function selectNode(options) {
+    var _ref6 = options || {},
+        nid = _ref6.nid;
+
+    var eventName = "dnd.selectNode";
+    var eventData = { nid: nid };
+    _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
+}
+/**
+ * 在画布中操作层级结构，将当前节点设置为取消选中状态
+ * 此方法在 画布 中使用
+ * @param options
+ */
+function unSelectNode(options) {
+    var eventName = "dnd.unSelectNode";
+    var eventData = null;
+    _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
+}
+
+/**
+ * 在画布中操作层级结构，插入指定节点
+ * 此方法在 画布 中使用
+ * @param options
+ */
+function insertNode(options) {
+    var _ref7 = options || {},
+        uiType = _ref7.uiType,
+        _ref7$uiData = _ref7.uiData,
+        uiData = _ref7$uiData === undefined ? {
+        source: {}, //ui原始/初始化数据对象
+        isPart: false //是否为部件ui
+        // isExt:false  //是否为扩展ui
+    } : _ref7$uiData,
+        targetNid = _ref7.targetNid,
+        targetParam = _ref7.targetParam,
+        position = _ref7.position;
+
+    var eventName = "dnd.insertNode";
+    var eventData = {
+        uiType: uiType, //ui类型标识
+        uiData: {
+            source: {}, //ui原始/初始化数据对象
+            isPart: false //是否为部件ui
+            // isExt:false  //是否为扩展ui
+        },
+        targetNid: targetNid,
+        targetParam: targetParam, //来自目标dom节点的uiparams属性的值
+        position: position
+    };
+    _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
+}
+/**
+ * 在画布中操作层级结构，移动节点
+ * 此方法在 画布 中使用
+ * @param options
+ */
+function moveNode(options) {
+    var _ref8 = options || {},
+        nid = _ref8.nid,
+        targetNid = _ref8.targetNid,
+        targetParams = _ref8.targetParams,
+        position = _ref8.position;
+
+    var eventName = "dnd.moveNode";
+    var eventData = {
+        nid: nid,
+        targetNid: targetNid,
+        targetParams: targetParams, //来自目标dom节点的uiparams属性的值
+        position: position
+    };
+    _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
+}
+
+/**
+ * 在画布中操作层级结构，删除节点
+ * 此方法在 画布 中使用
+ * @param options
+ * {
+ *     nid //节点的nid
+ * }
+ */
+function deleteNode(options) {
+    var _ref9 = options || {},
+        nid = _ref9.nid;
+
+    var eventName = "dnd.deleteNode";
+    var eventData = { nid: nid };
+    _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
+}
+
+/**
+ * 在画布中监听，层级结构中的节点被选中时的事件。
+ * 此方法在 画布 中使用
+ * @param options
+ * {
+ *     callback:function(eventData,eventContext){//获取返回结果的回调
+ *          let {
+ *              nid //选中层级节点的nid
+ *          } = eventData;
+ *     }
+ * }
+ */
+function onChooseNode(options) {
+    var _ref10 = options || {},
+        callback = _ref10.callback;
+
+    var eventName = 'dnd.onChooseNode';
+    _EventHelper2.default.listen({ eventName: eventName, callback: callback });
+}
+
+/**
+ * 在画布中监听，层级结构中的节点被取消选中时的事件。
+ * 此方法在 画布 中使用
+ * @param options
+ * {
+ *     callback:function(eventData,eventContext){//获取返回结果的回调
+ *
+ *     }
+ * }
+ */
+function onUnChooseNode(options) {
+    var _ref11 = options || {},
+        callback = _ref11.callback;
+
+    var eventName = 'dnd.onUnChooseNode';
+    _EventHelper2.default.listen({ eventName: eventName, callback: callback });
+}
+
+function buttonClick(options) {
+    var _ref12 = options || {},
+        nid = _ref12.nid,
+        buttonKey = _ref12.buttonKey;
+
+    var eventName = "dnd.buttonClick";
+    var eventData = { nid: nid, buttonKey: buttonKey };
+    _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
 }
 
 /***/ })
