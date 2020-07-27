@@ -1,5 +1,5 @@
 import EventHelper from "../EventHelper";
-
+import {validRequied} from "../ValidUtils";
 /**
  * 设置当前属性的值
  * @param {object} options
@@ -10,7 +10,7 @@ import EventHelper from "../EventHelper";
  */
 export function setValue(options){
   let {iframeId,value} = options;
-  if(!iframeId)return;
+  if(!validRequied('setValue','iframeId',iframeId))return;
   let eventName = "imd.setValue@"+iframeId;
   let eventData = value;
   EventHelper.request({eventName,eventData});
@@ -28,7 +28,7 @@ export function setValue(options){
  */
 export function getValue(options){
   let {iframeId,callback} = options;
-  if(!iframeId)return;
+  if(!validRequied('getValue','iframeId',iframeId))return;
   let eventName = "imd.getValue@"+iframeId;
   let callbackName = "imd.value@"+iframeId;
   EventHelper.request({eventName,callbackName,callback});
@@ -43,9 +43,25 @@ export function getValue(options){
  */
 export function close(options){
   let {iframeId} = options;
-  if(!iframeId)return;
+  if(!validRequied('close','iframeId',iframeId))return;
   let eventName = "imd.close@"+iframeId;
   EventHelper.request({eventName});
+}
+
+/**
+ *  打开弹出窗口
+ * @param {object} options
+ * {
+ *     iframeId，//必须参数，对应注册的iframeId值
+ *     openContext,//打开时需要携带给弹窗的上下文数据
+ * }
+ */
+export function open(options){
+  let {iframeId,openContext} = options;
+  if(!validRequied('open','iframeId',iframeId))return;
+  let eventName = "imd.open@"+iframeId;
+  let eventData = {openContext};
+  EventHelper.request({eventName,eventData});
 }
 
 /**
@@ -60,7 +76,7 @@ export function close(options){
  */
 export function getContext(options){
   let {iframeId,callback} = options;
-  if(!iframeId)return;
+  if(!validRequied('getContext','iframeId',iframeId))return;
   let eventName = "imd.getContext@"+iframeId;
   let callbackName = "imd.context@"+iframeId;
   EventHelper.request({eventName,callbackName,callback});
@@ -70,12 +86,13 @@ export function getContext(options){
  * 更新弹窗的配置信息
  * @param {object} options
  * {
- *      caption:''       //弹窗的标题
+ *     iframeId，//必须参数，对应注册的iframeId值
+ *     caption:''       //弹窗的标题
  * }
  */
 export function updateConfig(options){
   let {iframeId,...otherOptions} = options;
-  if(!iframeId)return;
+  if(!validRequied('updateConfig','iframeId',iframeId))return;
   let eventName = "imd.updateConfig@"+iframeId;
   let eventData = otherOptions;
   EventHelper.request({eventName,eventData});
@@ -91,7 +108,7 @@ export function updateConfig(options){
  */
 export function onOpen(options) {
   let {iframeId,callback} = options;
-  if(!iframeId)return;
+  if(!validRequied('onOpen','iframeId',iframeId))return;
   let eventName = 'imd.clickOpen@'+iframeId;
   EventHelper.listen({eventName,callback});
 }
@@ -107,7 +124,7 @@ export function onOpen(options) {
  */
 export function onCancel(options) {
   let {iframeId,callback} = options;
-  if(!iframeId)return;
+  if(!validRequied('onCancel','iframeId',iframeId))return;
   let eventName = 'imd.clickCancel@'+iframeId;
   EventHelper.listen({eventName,callback});
 }
@@ -122,7 +139,7 @@ export function onCancel(options) {
  */
 export function onOk(options) {
   let {iframeId,callback} = options;
-  if(!iframeId)return;
+  if(!validRequied('onOk','iframeId',iframeId))return;
   let eventName = 'imd.clickOk@'+iframeId;
   EventHelper.listen({eventName,callback});
 }

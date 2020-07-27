@@ -471,11 +471,11 @@ var _iframemodal = __webpack_require__(6);
 
 var iframemodal = _interopRequireWildcard(_iframemodal);
 
-var _iframepane = __webpack_require__(7);
+var _iframepane = __webpack_require__(8);
 
 var iframepane = _interopRequireWildcard(_iframepane);
 
-var _dragdrop = __webpack_require__(8);
+var _dragdrop = __webpack_require__(9);
 
 var dragdrop = _interopRequireWildcard(_dragdrop);
 
@@ -751,6 +751,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.setValue = setValue;
 exports.getValue = getValue;
 exports.close = close;
+exports.open = open;
 exports.getContext = getContext;
 exports.updateConfig = updateConfig;
 exports.onOpen = onOpen;
@@ -760,6 +761,8 @@ exports.onOk = onOk;
 var _EventHelper = __webpack_require__(0);
 
 var _EventHelper2 = _interopRequireDefault(_EventHelper);
+
+var _ValidUtils = __webpack_require__(7);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -777,7 +780,7 @@ function setValue(options) {
   var iframeId = options.iframeId,
       value = options.value;
 
-  if (!iframeId) return;
+  if (!(0, _ValidUtils.validRequied)('setValue', 'iframeId', iframeId)) return;
   var eventName = "imd.setValue@" + iframeId;
   var eventData = value;
   _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
@@ -797,7 +800,7 @@ function getValue(options) {
   var iframeId = options.iframeId,
       callback = options.callback;
 
-  if (!iframeId) return;
+  if (!(0, _ValidUtils.validRequied)('getValue', 'iframeId', iframeId)) return;
   var eventName = "imd.getValue@" + iframeId;
   var callbackName = "imd.value@" + iframeId;
   _EventHelper2.default.request({ eventName: eventName, callbackName: callbackName, callback: callback });
@@ -813,9 +816,27 @@ function getValue(options) {
 function close(options) {
   var iframeId = options.iframeId;
 
-  if (!iframeId) return;
+  if (!(0, _ValidUtils.validRequied)('close', 'iframeId', iframeId)) return;
   var eventName = "imd.close@" + iframeId;
   _EventHelper2.default.request({ eventName: eventName });
+}
+
+/**
+ *  打开弹出窗口
+ * @param {object} options
+ * {
+ *     iframeId，//必须参数，对应注册的iframeId值
+ *     openContext,//打开时需要携带给弹窗的上下文数据
+ * }
+ */
+function open(options) {
+  var iframeId = options.iframeId,
+      openContext = options.openContext;
+
+  if (!(0, _ValidUtils.validRequied)('open', 'iframeId', iframeId)) return;
+  var eventName = "imd.open@" + iframeId;
+  var eventData = { openContext: openContext };
+  _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
 }
 
 /**
@@ -832,7 +853,7 @@ function getContext(options) {
   var iframeId = options.iframeId,
       callback = options.callback;
 
-  if (!iframeId) return;
+  if (!(0, _ValidUtils.validRequied)('getContext', 'iframeId', iframeId)) return;
   var eventName = "imd.getContext@" + iframeId;
   var callbackName = "imd.context@" + iframeId;
   _EventHelper2.default.request({ eventName: eventName, callbackName: callbackName, callback: callback });
@@ -842,14 +863,15 @@ function getContext(options) {
  * 更新弹窗的配置信息
  * @param {object} options
  * {
- *      caption:''       //弹窗的标题
+ *     iframeId，//必须参数，对应注册的iframeId值
+ *     caption:''       //弹窗的标题
  * }
  */
 function updateConfig(options) {
   var iframeId = options.iframeId,
       otherOptions = _objectWithoutProperties(options, ["iframeId"]);
 
-  if (!iframeId) return;
+  if (!(0, _ValidUtils.validRequied)('updateConfig', 'iframeId', iframeId)) return;
   var eventName = "imd.updateConfig@" + iframeId;
   var eventData = otherOptions;
   _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
@@ -867,7 +889,7 @@ function onOpen(options) {
   var iframeId = options.iframeId,
       callback = options.callback;
 
-  if (!iframeId) return;
+  if (!(0, _ValidUtils.validRequied)('onOpen', 'iframeId', iframeId)) return;
   var eventName = 'imd.clickOpen@' + iframeId;
   _EventHelper2.default.listen({ eventName: eventName, callback: callback });
 }
@@ -885,7 +907,7 @@ function onCancel(options) {
   var iframeId = options.iframeId,
       callback = options.callback;
 
-  if (!iframeId) return;
+  if (!(0, _ValidUtils.validRequied)('onCancel', 'iframeId', iframeId)) return;
   var eventName = 'imd.clickCancel@' + iframeId;
   _EventHelper2.default.listen({ eventName: eventName, callback: callback });
 }
@@ -902,13 +924,33 @@ function onOk(options) {
   var iframeId = options.iframeId,
       callback = options.callback;
 
-  if (!iframeId) return;
+  if (!(0, _ValidUtils.validRequied)('onOk', 'iframeId', iframeId)) return;
   var eventName = 'imd.clickOk@' + iframeId;
   _EventHelper2.default.listen({ eventName: eventName, callback: callback });
 }
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.validRequied = validRequied;
+function validRequied(funcName, paramName, paramValue) {
+    if (paramValue) {
+        return true;
+    } else {
+        console.log("[IdeApi]参数校验失败，方法：" + funcName + "，缺少必要参数：" + paramName);
+        return false;
+    }
+}
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1105,7 +1147,7 @@ function onHide(options) {
 }
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1225,6 +1267,11 @@ function dragStopToCanvas(options) {
  * 在画布中监听，自定义面板开始拖拽的事件。
  * 此方法在 画布 中使用
  * @param options
+ * {
+ *     callback:function(eventData,eventContext){//获取返回结果的回调
+ *          //eventData的内容与dragStartToCanvas入参保持一致
+ *     }
+ * }
  */
 function onDragStartToCanvas(options) {
     var _ref4 = options || {},
@@ -1238,6 +1285,11 @@ function onDragStartToCanvas(options) {
  * 在画布中监听，自定义面板停止拖拽的事件。
  * 此方法在 画布 中使用
  * @param options
+ * {
+ *     callback:function(eventData,eventContext){//获取返回结果的回调
+ *              //无额外参数
+ *     }
+ * }
  */
 function onDragStopToCanvas(options) {
     var _ref5 = options || {},
