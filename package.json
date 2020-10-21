@@ -1,6 +1,6 @@
 {
   "name": "ide-sdk-api",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "可视化设计器提供的API",
   "main": "dist/ide-sdk-api.js",
   "scripts": {

@@ -363,12 +363,12 @@ var MessageHelper = {
         } else {
             window.detachEvent('message', MessageHelper._receiveMessage);
         }
-        delete window._isMessageKeep_;
+        delete MessageHelper._isMessageKeep_;
     },
 
     //消息监听维持
     keepMessage: function keepMessage() {
-        if (!window._isMessageKeep_) {
+        if (!MessageHelper._isMessageKeep_) {
             MessageHelper.startMessage();
         }
     },
