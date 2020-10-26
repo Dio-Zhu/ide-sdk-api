@@ -519,6 +519,9 @@ exports.updateTreeData = updateTreeData;
 exports.getTreeData = getTreeData;
 exports.getPanelState = getPanelState;
 exports.setPanelState = setPanelState;
+exports.confirmOpen = confirmOpen;
+exports.confirmClose = confirmClose;
+exports.onConfirmClose = onConfirmClose;
 
 var _EventHelper = __webpack_require__(0);
 
@@ -626,6 +629,50 @@ function setPanelState(options) {
     _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
 }
 
+/**
+ * 打开全局确认框
+ * @param {*} options
+ *  {
+ *   title:'',  //弹窗标题
+ *   content:'', //提示内容
+ * }
+ */
+
+function confirmOpen(options) {
+    var eventName = "confirm.open";
+    var eventData = options;
+    _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
+}
+
+/**
+ * 关闭确认提示框
+ * @param {object} options //需要携带的参数
+ */
+function confirmClose(options) {
+    var eventName = "confirm.close";
+    var eventData = options;
+    _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
+}
+
+/**
+ * 当确认提示框关闭时触发
+ * @param {object} options
+ *{
+ *     callback:function(eventData,eventContext){//获取返回结果的回调
+ *          eventData = {
+ *              clicktype: 'ok', //'ok'-点击确认、'cancel'-点击取消
+ *              ... //confirmClose时传入的其它参数
+ *          }
+ *     }
+ *}
+ */
+function onConfirmClose(options) {
+    var callback = options.callback;
+
+    var eventName = 'confirm.closed';
+    _EventHelper2.default.listen({ eventName: eventName, callback: callback });
+}
+
 /***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -641,8 +688,6 @@ exports.modalClose = modalClose;
 exports.onModalClose = onModalClose;
 exports.modalOpen = modalOpen;
 exports.setModalConfig = setModalConfig;
-exports.confirmOpen = confirmOpen;
-exports.confirmClose = confirmClose;
 
 var _EventHelper = __webpack_require__(0);
 
@@ -736,18 +781,6 @@ function modalOpen(options) {
  */
 function setModalConfig(options) {
   var eventName = "modal.setConfig";
-  var eventData = options;
-  _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
-}
-
-function confirmOpen(options) {
-  var eventName = "confirm.open";
-  var eventData = options;
-  _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
-}
-
-function confirmClose(options) {
-  var eventName = "confirm.close";
   var eventData = options;
   _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
 }
