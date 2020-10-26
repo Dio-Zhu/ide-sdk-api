@@ -87,3 +87,31 @@ export function setModalConfig(options){
   let eventData = options;
   EventHelper.request({eventName,eventData});
 }
+
+
+export function confirmOpen (options) {
+  let eventName = "confirm.open";
+  let eventData = options;
+  EventHelper.request({eventName,eventData});
+}
+
+export function confirmClose (options) {
+  let eventName = "confirm.close";
+  let eventData = options;
+  EventHelper.request({eventName,eventData});
+}
+
+/**
+ * 确认框关闭时触发
+ * @param {object} options
+ *{
+ *     callback:function(eventData,eventContext){//获取返回结果的回调
+ *          //eventData为onConfirmClose时传入的参数
+ *     }
+ *}
+ */
+export function onConfirmClose(options) {
+  let {callback} = options;
+  let eventName = 'confirm.closed';
+  EventHelper.listen({eventName,callback});
+}

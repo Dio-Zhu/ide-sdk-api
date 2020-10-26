@@ -363,12 +363,12 @@ var MessageHelper = {
         } else {
             window.detachEvent('message', MessageHelper._receiveMessage);
         }
-        delete window._isMessageKeep_;
+        delete MessageHelper._isMessageKeep_;
     },
 
     //消息监听维持
     keepMessage: function keepMessage() {
-        if (!window._isMessageKeep_) {
+        if (!MessageHelper._isMessageKeep_) {
             MessageHelper.startMessage();
         }
     },
@@ -641,6 +641,8 @@ exports.modalClose = modalClose;
 exports.onModalClose = onModalClose;
 exports.modalOpen = modalOpen;
 exports.setModalConfig = setModalConfig;
+exports.confirmOpen = confirmOpen;
+exports.confirmClose = confirmClose;
 
 var _EventHelper = __webpack_require__(0);
 
@@ -734,6 +736,18 @@ function modalOpen(options) {
  */
 function setModalConfig(options) {
   var eventName = "modal.setConfig";
+  var eventData = options;
+  _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
+}
+
+function confirmOpen(options) {
+  var eventName = "confirm.open";
+  var eventData = options;
+  _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
+}
+
+function confirmClose(options) {
+  var eventName = "confirm.close";
   var eventData = options;
   _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
 }
