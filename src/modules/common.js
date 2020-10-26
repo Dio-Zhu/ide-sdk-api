@@ -104,35 +104,33 @@ export function confirmOpen (options) {
     let eventName = "confirm.open";
     let eventData = options;
     EventHelper.request({eventName,eventData});
-  
+
 }
-  
+
 /**
- * 关闭全局确认框
- * @param {*} options
- *  {
- *   title:'',  //弹窗标题
- *   content:'', //提示内容
- * }
+ * 关闭确认提示框
+ * @param {object} options //需要携带的参数
  */
-
 export function confirmClose (options) {
-let eventName = "confirm.close";
-let eventData = options;
-EventHelper.request({eventName,eventData});
+    let eventName = "confirm.close";
+    let eventData = options;
+    EventHelper.request({eventName,eventData});
 }
 
 /**
- * 监听确认框关闭时触发回调事件
+ * 当确认提示框关闭时触发
  * @param {object} options
  *{
  *     callback:function(eventData,eventContext){//获取返回结果的回调
- *          //eventData为onConfirmClose时传入的参数
+ *          eventData = {
+ *              clicktype: 'ok', //'ok'-点击确认、'cancel'-点击取消
+ *              ... //confirmClose时传入的其它参数
+ *          }
  *     }
  *}
-*/
+ */
 export function onConfirmClose(options) {
-let {callback} = options;
-let eventName = 'confirm.closed';
-EventHelper.listen({eventName,callback});
+    let {callback} = options;
+    let eventName = 'confirm.closed';
+    EventHelper.listen({eventName,callback});
 }
