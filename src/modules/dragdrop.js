@@ -152,7 +152,7 @@ export function insertNode(options){
     let eventData = {
         uiType,//ui类型标识
         uiData:{
-            source:{},//ui原始/初始化数据对象
+            source:{...options.uiData},//ui原始/初始化数据对象
             isPart:false, //是否为部件ui
             // isExt:false  //是否为扩展ui
         },
