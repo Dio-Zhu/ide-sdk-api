@@ -151,11 +151,7 @@ export function insertNode(options){
     let eventName = "dnd.insertNode";
     let eventData = {
         uiType,//ui类型标识
-        uiData:{
-            source:{...options.uiData},//ui原始/初始化数据对象
-            isPart:false, //是否为部件ui
-            // isExt:false  //是否为扩展ui
-        },
+        uiData,
         targetNid,
         targetParam,//来自目标dom节点的uiparams属性的值
         position

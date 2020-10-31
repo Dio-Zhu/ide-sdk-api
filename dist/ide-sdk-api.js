@@ -1203,9 +1203,6 @@ function onHide(options) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 exports.getContextData = getContextData;
 exports.canvasIsDragStart = canvasIsDragStart;
 exports.canvasIsDragStop = canvasIsDragStop;
@@ -1397,11 +1394,7 @@ function insertNode(options) {
     var eventName = "dnd.insertNode";
     var eventData = {
         uiType: uiType, //ui类型标识
-        uiData: {
-            source: _extends({}, options.uiData), //ui原始/初始化数据对象
-            isPart: false //是否为部件ui
-            // isExt:false  //是否为扩展ui
-        },
+        uiData: uiData,
         targetNid: targetNid,
         targetParam: targetParam, //来自目标dom节点的uiparams属性的值
         position: position
