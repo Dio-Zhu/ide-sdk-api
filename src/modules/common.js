@@ -134,3 +134,11 @@ export function onConfirmClose(options) {
     let eventName = 'confirm.closed';
     EventHelper.listen({eventName,callback});
 }
+
+
+export function getUIConfig(options){
+    let {callback, eventData} = options||{};
+    let eventName = "getUIConfig";
+    let callbackName = "uiConfig";
+    EventHelper.request({eventName,eventData,callbackName,callback});
+}

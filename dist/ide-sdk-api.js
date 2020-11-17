@@ -522,6 +522,7 @@ exports.setPanelState = setPanelState;
 exports.confirmOpen = confirmOpen;
 exports.confirmClose = confirmClose;
 exports.onConfirmClose = onConfirmClose;
+exports.getUIConfig = getUIConfig;
 
 var _EventHelper = __webpack_require__(0);
 
@@ -671,6 +672,16 @@ function onConfirmClose(options) {
 
     var eventName = 'confirm.closed';
     _EventHelper2.default.listen({ eventName: eventName, callback: callback });
+}
+
+function getUIConfig(options) {
+    var _ref = options || {},
+        callback = _ref.callback,
+        eventData = _ref.eventData;
+
+    var eventName = "getUIConfig";
+    var callbackName = "uiConfig";
+    _EventHelper2.default.request({ eventName: eventName, eventData: eventData, callbackName: callbackName, callback: callback });
 }
 
 /***/ }),
