@@ -135,7 +135,18 @@ export function onConfirmClose(options) {
     EventHelper.listen({eventName,callback});
 }
 
-
+/**
+ * 动态获取ui配置
+ *  * @param {*} options 
+ * {
+ *    eventData:{
+ *     treeNode,  //当前节点
+ *      uiConfig  // 当前节点的默认配置
+ *    },
+ *    callback: function(eventData,eventContext){//获取返回结果的回调
+ *    }
+ * }
+ */
 export function getUIConfig(options){
     let {callback, eventData} = options||{};
     let eventName = "getUIConfig";
