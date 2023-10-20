@@ -159,6 +159,27 @@ export function insertNode(options){
     EventHelper.request({eventName,eventData});
 }
 /**
+ * 在画布中操作层级结构，更新指定节点
+ * 此方法在 画布 中使用
+ * @param options
+ */
+export function updateNode(options){
+    let {
+        nid,//ui类型标识
+        uiData = {
+            source:{},//ui原始/初始化数据对象
+            // isPart:false, //是否为部件ui
+            // isExt:false  //是否为扩展ui
+        }
+    } = options||{};
+    let eventName = "dnd.updateNode";
+    let eventData = {
+        nid,
+        uiData
+    };
+    EventHelper.request({eventName,eventData});
+}
+/**
  * 在画布中操作层级结构，移动节点
  * 此方法在 画布 中使用
  * @param options
