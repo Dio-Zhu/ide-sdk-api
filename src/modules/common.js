@@ -97,6 +97,8 @@ export function setPanelState(options){
  *  {
  *   title:'',  //弹窗标题
  *   content:'', //提示内容
+ *   autoClose:true,      //点击确定和取消后是否立即关闭窗口（即触发modalClose，设置为false将不会触发onConfirmClose）
+ *   openContext:{} 	  //打开时携带的上下文信息
  * }
  */
 
@@ -116,6 +118,23 @@ export function confirmClose (options) {
     let eventData = options;
     EventHelper.request({eventName,eventData});
 }
+/**
+ * 当确认/取消按钮点击时触发
+ * @param {object} options
+ *{
+ *     callback:function(eventData,eventContext){//获取返回结果的回调
+ *          eventData = {
+ *              clicktype: 'ok', //'ok'-点击确认、'cancel'-点击取消
+ *              openContext:{} // confirmOpen调用时传入的openContext参数
+ *          }
+ *     }
+ *}
+ */
+export function onConfirmClick(options) {
+    let {callback} = options;
+    let eventName = 'confirm.click';
+    EventHelper.listen({eventName,callback});
+}
 
 /**
  * 当确认提示框关闭时触发
@@ -124,6 +143,7 @@ export function confirmClose (options) {
  *     callback:function(eventData,eventContext){//获取返回结果的回调
  *          eventData = {
  *              clicktype: 'ok', //'ok'-点击确认、'cancel'-点击取消
+ *              openContext:{} // confirmOpen调用时传入的openContext参数
  *              ... //confirmClose时传入的其它参数
  *          }
  *     }
@@ -137,7 +157,7 @@ export function onConfirmClose(options) {
 
 /**
  * 动态获取ui配置
- *  * @param {*} options 
+ *  * @param {*} options
  * {
  *    eventData:{
  *     treeNode,  //当前节点

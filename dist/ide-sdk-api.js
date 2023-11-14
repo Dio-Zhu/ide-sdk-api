@@ -521,6 +521,7 @@ exports.getPanelState = getPanelState;
 exports.setPanelState = setPanelState;
 exports.confirmOpen = confirmOpen;
 exports.confirmClose = confirmClose;
+exports.onConfirmClick = onConfirmClick;
 exports.onConfirmClose = onConfirmClose;
 exports.getUIConfig = getUIConfig;
 
@@ -636,6 +637,8 @@ function setPanelState(options) {
  *  {
  *   title:'',  //弹窗标题
  *   content:'', //提示内容
+ *   autoClose:true,      //点击确定和取消后是否立即关闭窗口（即触发modalClose，设置为false将不会触发onConfirmClose）
+ *   openContext:{} 	  //打开时携带的上下文信息
  * }
  */
 
@@ -654,6 +657,24 @@ function confirmClose(options) {
     var eventData = options;
     _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
 }
+/**
+ * 当确认/取消按钮点击时触发
+ * @param {object} options
+ *{
+ *     callback:function(eventData,eventContext){//获取返回结果的回调
+ *          eventData = {
+ *              clicktype: 'ok', //'ok'-点击确认、'cancel'-点击取消
+ *              openContext:{} // confirmOpen调用时传入的openContext参数
+ *          }
+ *     }
+ *}
+ */
+function onConfirmClick(options) {
+    var callback = options.callback;
+
+    var eventName = 'confirm.click';
+    _EventHelper2.default.listen({ eventName: eventName, callback: callback });
+}
 
 /**
  * 当确认提示框关闭时触发
@@ -662,6 +683,7 @@ function confirmClose(options) {
  *     callback:function(eventData,eventContext){//获取返回结果的回调
  *          eventData = {
  *              clicktype: 'ok', //'ok'-点击确认、'cancel'-点击取消
+ *              openContext:{} // confirmOpen调用时传入的openContext参数
  *              ... //confirmClose时传入的其它参数
  *          }
  *     }
@@ -674,6 +696,18 @@ function onConfirmClose(options) {
     _EventHelper2.default.listen({ eventName: eventName, callback: callback });
 }
 
+/**
+ * 动态获取ui配置
+ *  * @param {*} options
+ * {
+ *    eventData:{
+ *     treeNode,  //当前节点
+ *      uiConfig  // 当前节点的默认配置
+ *    },
+ *    callback: function(eventData,eventContext){//获取返回结果的回调
+ *    }
+ * }
+ */
 function getUIConfig(options) {
     var _ref = options || {},
         callback = _ref.callback,
@@ -1224,6 +1258,7 @@ exports.onDragStopToCanvas = onDragStopToCanvas;
 exports.selectNode = selectNode;
 exports.unSelectNode = unSelectNode;
 exports.insertNode = insertNode;
+exports.updateNode = updateNode;
 exports.moveNode = moveNode;
 exports.deleteNode = deleteNode;
 exports.onChooseNode = onChooseNode;
@@ -1413,16 +1448,38 @@ function insertNode(options) {
     _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
 }
 /**
+ * 在画布中操作层级结构，更新指定节点
+ * 此方法在 画布 中使用
+ * @param options
+ */
+function updateNode(options) {
+    var _ref8 = options || {},
+        nid = _ref8.nid,
+        _ref8$uiData = _ref8.uiData,
+        uiData = _ref8$uiData === undefined ? {
+        source: {} //ui原始/初始化数据对象
+        // isPart:false, //是否为部件ui
+        // isExt:false  //是否为扩展ui
+    } : _ref8$uiData;
+
+    var eventName = "dnd.updateNode";
+    var eventData = {
+        nid: nid,
+        uiData: uiData
+    };
+    _EventHelper2.default.request({ eventName: eventName, eventData: eventData });
+}
+/**
  * 在画布中操作层级结构，移动节点
  * 此方法在 画布 中使用
  * @param options
  */
 function moveNode(options) {
-    var _ref8 = options || {},
-        nid = _ref8.nid,
-        targetNid = _ref8.targetNid,
-        targetParams = _ref8.targetParams,
-        position = _ref8.position;
+    var _ref9 = options || {},
+        nid = _ref9.nid,
+        targetNid = _ref9.targetNid,
+        targetParams = _ref9.targetParams,
+        position = _ref9.position;
 
     var eventName = "dnd.moveNode";
     var eventData = {
@@ -1443,8 +1500,8 @@ function moveNode(options) {
  * }
  */
 function deleteNode(options) {
-    var _ref9 = options || {},
-        nid = _ref9.nid;
+    var _ref10 = options || {},
+        nid = _ref10.nid;
 
     var eventName = "dnd.deleteNode";
     var eventData = { nid: nid };
@@ -1464,8 +1521,8 @@ function deleteNode(options) {
  * }
  */
 function onChooseNode(options) {
-    var _ref10 = options || {},
-        callback = _ref10.callback;
+    var _ref11 = options || {},
+        callback = _ref11.callback;
 
     var eventName = 'dnd.onChooseNode';
     _EventHelper2.default.listen({ eventName: eventName, callback: callback });
@@ -1482,17 +1539,17 @@ function onChooseNode(options) {
  * }
  */
 function onUnChooseNode(options) {
-    var _ref11 = options || {},
-        callback = _ref11.callback;
+    var _ref12 = options || {},
+        callback = _ref12.callback;
 
     var eventName = 'dnd.onUnChooseNode';
     _EventHelper2.default.listen({ eventName: eventName, callback: callback });
 }
 
 function buttonClick(options) {
-    var _ref12 = options || {},
-        nid = _ref12.nid,
-        buttonKey = _ref12.buttonKey;
+    var _ref13 = options || {},
+        nid = _ref13.nid,
+        buttonKey = _ref13.buttonKey;
 
     var eventName = "dnd.buttonClick";
     var eventData = { nid: nid, buttonKey: buttonKey };
